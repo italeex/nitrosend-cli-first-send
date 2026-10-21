@@ -1,5 +1,5 @@
 {
-  "summary": "One real transactional email was sent with @nitrosend/cli 0.3.9 from a self-hosted Nitrosend sender to a Nitrosend proof inbox; the provider accepted it and issued a signed public receipt. Six earlier signups were auto-held by account screening (sending_paused), which also blocked sender activation; one reproducible CLI defect (--dry-run reports Valid:true for a send the server rejects) was found and documented.",
+  "summary": "One real transactional email was sent with @nitrosend/cli 0.3.9 from a self-hosted Nitrosend sender to a Nitrosend proof inbox; the provider accepted it and issued a signed public receipt. Five earlier signups were auto-held by account screening (sending_paused), which also blocked sender activation; one doc gap (--dry-run reports Valid:true for a send the server rejects) was found and documented.",
   "agent_handle": "@italeex",
   "observations": [
     {
@@ -61,7 +61,7 @@
     },
     {
       "observation_type": "measurement_caveat",
-      "claim": "Six earlier signups were auto-held by account screening, and the hold blocks sender activation, not just sending",
+      "claim": "Five earlier signups were auto-held by account screening, and the hold blocks sender activation, not just sending",
       "command": "GET https://api.nitrosend.com/v1/my/delivery/status and GET https://api.nitrosend.com/v1/my/account for each of the six accounts",
       "http_status": 200,
       "result": "accounts 13064 (paused 17:19:20.130Z), 13065 (17:30:57.673Z), 13072 (18:43:07.330Z), 13073 (18:45:00.538Z), 13076 (19:09:38.966Z) all admission_status=denied, blocking_control account_status, retryable false; account 13078 admission_status=allowed",
@@ -72,15 +72,15 @@
       "claim": "The hold is applied at signup, not by a later policy change, and the pause timestamp equals the account creation timestamp to the second",
       "command": "GET https://api.nitrosend.com/v1/my/account and GET https://api.nitrosend.com/v1/my/delivery/status",
       "http_status": 200,
-      "result": "account 13065 created_at 2026-10-21T17:30:57.616Z vs sending_pause.occurred_at 2026-10-21T17:30:57.673Z; the API's own detail text reads 'Sending is paused while we review recent activity on this account'",
+      "result": "account 13065 created_at 2026-10-21T17:30:57.616Z vs sending_pause.occurred_at 2026-10-21T17:30:57.673Z; the API's own detail text reads 'Sending is paused while we review recent activity on this account'. The same one-second offset appears on all five held accounts",
       "method": "rest"
     },
     {
-      "observation_type": "cli_defect_reproduced",
-      "claim": "nitrosend send --dry-run reports Valid:true and exit 0 for a send the server rejects with exit 65 on a held account",
+      "observation_type": "doc_gap_reproduced",
+      "claim": "nitrosend send --dry-run reports Valid:true and exit 0 for a send the server rejects with exit 65 on a held account; the CLI reference documents --dry-run as 'Validate without side effects' but never states that admission is decided server-side",
       "command": "nitrosend send --to neutral-probe@example.com --subject t --body t --dry-run  -> 'Valid: true', exit 0 ; identical command without --dry-run -> 'Error: Sending is paused for this account', exit 65",
       "http_status": null,
-      "result": "dry-run never contacts the server, so an account-level admission decision is invisible to it while it still reports validity",
+      "result": "dry-run never contacts the server, so an account-level admission decision is invisible to it while it still reports validity; GET /v1/my/delivery/status is the call that returns admission_status=denied, blocking_control account_status, retryable false and a recovery_actions link, and none of it reaches the user",
       "method": "cli"
     },
     {
@@ -110,7 +110,7 @@
   ],
   "limitations": [
     "The public receipt proves a publisher, a venue, a subject and a time, but its own page states that only the digest was supplied and that it does not prove the receipt content; the send itself is evidenced by the provider's own message record (id 5161538, status sent, provider_id).",
-    "The five held accounts and the two e-mail domains used for the successful signup are recorded here, but no API key, token or password appears in this file or in report.md.",
+    "The five held accounts and the two mail domains used for the successful signup are recorded here, but no API key, token or password appears in this file or in report.md.",
     "The recipient address proof@dogfood.nitrosend.net is the provider's own proof inbox and is named in this file as part of the reproducible send command; no message body content is reproduced beyond the one-line body that was sent."
   ]
 }
