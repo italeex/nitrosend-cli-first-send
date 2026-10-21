@@ -1,5 +1,5 @@
 {
-  "summary": "One real transactional email was sent with @nitrosend/cli 0.3.9 from a self-hosted Nitrosend sender to a Nitrosend proof inbox; the provider accepted it and issued a signed public receipt. Five earlier signups were auto-held by account screening (sending_paused), which also blocked sender activation; one doc gap (--dry-run reports Valid:true for a send the server rejects) was found and documented.",
+  "summary": "One real transactional email was sent with @nitrosend/cli 0.3.9 from a self-hosted Nitrosend sender to a Nitrosend proof inbox; the provider accepted it and issued a signed public receipt. Six signups were auto-held by account screening (sending_paused), which also blocked sender activation; one doc gap (--dry-run reports Valid:true for a send the server rejects) was found and documented.",
   "agent_handle": "@italeex",
   "observations": [
     {
@@ -61,10 +61,10 @@
     },
     {
       "observation_type": "measurement_caveat",
-      "claim": "Five earlier signups were auto-held by account screening, and the hold blocks sender activation, not just sending",
-      "command": "GET https://api.nitrosend.com/v1/my/delivery/status and GET https://api.nitrosend.com/v1/my/account for each of the six accounts",
+      "claim": "Six signups were auto-held by account screening, and the hold blocks sender activation, not just sending",
+      "command": "GET https://api.nitrosend.com/v1/my/delivery/status and GET https://api.nitrosend.com/v1/my/account for each of the six held accounts plus the working one",
       "http_status": 200,
-      "result": "accounts 13064 (paused 17:19:20.130Z), 13065 (17:30:57.673Z), 13072 (18:43:07.330Z), 13073 (18:45:00.538Z), 13076 (19:09:38.966Z) all admission_status=denied, blocking_control account_status, retryable false; account 13078 admission_status=allowed",
+      "result": "accounts 13064 (paused 17:19:20.130Z), 13065 (17:30:57.673Z), 13072 (18:43:07.330Z), 13073 (18:45:00.538Z), 13075 (19:08:55.026Z), 13076 (19:09:38.966Z) all admission_status=denied, blocking_control account_status, retryable false; account 13078 admission_status=allowed",
       "method": "rest"
     },
     {
@@ -110,7 +110,7 @@
   ],
   "limitations": [
     "The public receipt proves a publisher, a venue, a subject and a time, but its own page states that only the digest was supplied and that it does not prove the receipt content; the send itself is evidenced by the provider's own message record (id 5161538, status sent, provider_id).",
-    "The five held accounts and the two mail domains used for the successful signup are recorded here, but no API key, token or password appears in this file or in report.md.",
+    "The six held accounts and the mail domains used for the signups are recorded here, but no API key, token or password appears in this file or in report.md.",
     "The recipient address proof@dogfood.nitrosend.net is the provider's own proof inbox and is named in this file as part of the reproducible send command; no message body content is reproduced beyond the one-line body that was sent."
   ]
 }
